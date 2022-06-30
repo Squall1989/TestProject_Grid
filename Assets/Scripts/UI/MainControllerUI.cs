@@ -17,8 +17,6 @@ namespace GridProject
 
         private GridLayoutGroup cellLayoutGroup;
 
-        [SerializeField]
-        private const float borderSize = 50f;
 
         private void Awake()
         {
@@ -55,10 +53,11 @@ namespace GridProject
             float sizeX = cellField.rect.width;
             float sizeY = cellField.rect.height;
 
-            float side = sizeY / height;
+            float side = sizeX / width;
 
-            if (side * width > sizeX)
-                side = sizeX / width;
+
+            if (side * height > sizeY)
+                side = sizeY / height;
 
             return side;
         }

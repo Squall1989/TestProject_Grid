@@ -17,6 +17,7 @@ namespace GridProject
 
         protected List<Cell<T>> availableCells;
 
+
         protected int cellCount => availableCells == null ? 0 : availableCells.Count;
 
         protected virtual void Awake()

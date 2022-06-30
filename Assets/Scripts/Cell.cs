@@ -19,21 +19,11 @@ namespace GridProject
 
         protected abstract void SetEnable(bool isEnable);
 
-        internal abstract void Animate(float animStartTime, bool isStart);
-
-        internal abstract void Move(float moveTime);
-
-
         internal virtual void Activate(bool isActive)
         {
             gameObject.SetActive(isActive);
         }
 
-        internal virtual void EndMove(T newVal)
-        {
-            CellVal = newVal;
-            SetEnable(true);
-        }
         // initVal may be significant type, then need unboxing
         internal virtual void Init(object initVal)
         {
