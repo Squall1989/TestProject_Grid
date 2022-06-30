@@ -13,24 +13,29 @@ namespace GridProject
     {
         [SerializeField]
         protected T cellMainType;
-        internal virtual T CellVal { get; private set; }
+        internal virtual object CellVal { get; private set; }
 
         internal abstract void Generate();
 
-
-        internal abstract void Activate(bool isActive);
+        protected abstract void SetEnable(bool isEnable);
 
         internal abstract void Animate(float animStartTime, bool isStart);
 
         internal abstract void Move(float moveTime);
 
+
+        internal virtual void Activate(bool isActive)
+        {
+            gameObject.SetActive(isActive);
+        }
+
         internal virtual void EndMove(T newVal)
         {
             CellVal = newVal;
-            Activate(true);
+            SetEnable(true);
         }
-
-        protected virtual void Init(T initVal)
+        // initVal may be significant type, then need unboxing
+        internal virtual void Init(object initVal)
         {
             CellVal = initVal;
             Activate(true);

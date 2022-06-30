@@ -11,12 +11,12 @@ namespace GridProject
     /// </summary>
     public class CellText : Cell<TextMeshProUGUI>
     {
-
-
-        internal override void Activate(bool isActive)
+        protected override void SetEnable(bool isEnable)
         {
-            cellMainType.enabled = isActive;
+            cellMainType.enabled = isEnable;
+
         }
+
 
         internal override void Animate(float animStartTime, bool isStart)
         {
@@ -31,6 +31,12 @@ namespace GridProject
         internal override void Move(float moveTime)
         {
 
+        }
+
+        internal override void Init(object initVal)
+        {
+            base.Init(initVal);
+            cellMainType.text = initVal.ToString();
         }
     }
 }

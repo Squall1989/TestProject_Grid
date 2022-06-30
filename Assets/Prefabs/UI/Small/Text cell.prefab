@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3083308802094523532}
   - component: {fileID: 3640815581287647374}
   - component: {fileID: 670307282722103372}
+  - component: {fileID: 38947830100503838}
   m_Layer: 0
   m_Name: Text cell
   m_TagString: Untagged
@@ -91,12 +92,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
+  m_fontSize: 18
   m_fontSizeBase: 60
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 200
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -133,3 +134,16 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &38947830100503838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5303215456129343018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d4c3edbc2830da43857e8d84ad5b4e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellMainType: {fileID: 670307282722103372}

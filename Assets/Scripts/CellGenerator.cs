@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace GridProject
 {
@@ -10,20 +11,24 @@ namespace GridProject
     /// In childrens must have at least 1 cell
     /// Grid layout group in the same object
     /// </summary>
-    public class CellGenerator<T> : MonoBehaviour
+    public abstract class CellGenerator<T> : MonoBehaviour
     {
-        private List<Cell<T>> availableCells;
+        protected float startSizeX, startSizeY;
 
-        private int cellCount => availableCells == null ? 0 : availableCells.Count;
+        protected List<Cell<T>> availableCells;
 
-        private void Awake()
+        protected int cellCount => availableCells == null ? 0 : availableCells.Count;
+
+        protected virtual void Awake()
         {
-            GetAvailableCells();
+            startSizeX = (transform as RectTransform).sizeDelta.x;
+            startSizeY = (transform as RectTransform).sizeDelta.y;
 
+            GetAvailableCells();
         }
 
         // From start, find cells in childrens
-        private void GetAvailableCells()
+        protected void GetAvailableCells()
         {
             // get in children
             var arrayCells = transform.GetComponentsInChildren<Cell<T>>(true);
@@ -42,21 +47,22 @@ namespace GridProject
             
         }
 
-        // When some need a square of cells
-        internal void Generate(int width, int height)
+
+        // Start generate
+        internal virtual void Generate(int width, int height)
         {
+
             if(cellCount < width * height)
             {
                 CreateNewCells(width * height - cellCount);
             }
-            else
-            {
-                // Deactive unnecessary cells
-                ExcessCells(cellCount - width * height);
-            }
+            
+            // Deactive unnecessary cells
+            ExcessCells(cellCount - width * height);
         }
 
-        private void CreateNewCells(int howMuch)
+
+        protected void CreateNewCells(int howMuch)
         {
             // Change list correct capacity
             availableCells.Capacity = cellCount + howMuch;
@@ -70,12 +76,19 @@ namespace GridProject
             }
         }
 
-        private void ExcessCells(int howMuch)
+        protected void ExcessCells(int howMuch)
         {
-            for(int i = 0; i < howMuch; i++)
+            for(int i = 0; i < availableCells.Count; i++)
             {
-                availableCells[i].Activate(false);
+                bool isActive = i >= howMuch;
+
+                availableCells[i].Activate(isActive);
+
+                if (isActive)
+                    GenerateCell(availableCells[i]);
             }
         }
+
+        protected abstract void GenerateCell(Cell<T> cell);
     }
 }
