@@ -10,7 +10,7 @@ namespace GridProject
     /// <summary>
     /// Input events controller
     /// </summary>
-    public class ControllerInputUI : MonoBehaviour
+    public class ControllerInputUI : MonoBehaviour, ISafeAreaMovable
     {
         [SerializeField]
         private TMP_InputField inputWidth;
@@ -29,6 +29,12 @@ namespace GridProject
         public Action<int, int> OnGenerate;
         public Action OnRandomize;
 
+        private Vector2 startPos;
+        
+        public Vector2 StartPos { get =>  startPos; set => startPos = value; }
+
+        public RectTransform MovableRect => transform as RectTransform;
+
         private void Awake()
         {
             inputWidth.onEndEdit.AddListener(ChangeWidth);
@@ -39,6 +45,11 @@ namespace GridProject
             // Set min size
             CheckSize(ref fieldWidth);
             CheckSize(ref fieldHeight);
+        }
+
+        private void Start()
+        {
+            MainControllerUI.Instance.RegisterSafeAreaMovable(this);
         }
 
         private void ChangeHeight(string heightStr)

@@ -22,16 +22,52 @@ namespace GridProject
 
         private GridLayoutGroup cellLayoutGroup;
 
+        private List<ISafeAreaMovable> movablesList = new List<ISafeAreaMovable>();
+
+        public static MainControllerUI Instance;
 
         private void Awake()
         {
             cellLayoutGroup = cellField.GetComponent<GridLayoutGroup>();
+
+            if (Instance == null)
+                Instance = this;
+            else if(Instance == this)
+                Destroy(gameObject);
+
+
+            
         }
 
         private void Start()
         {
             SubscribeInput();
         }
+
+        internal void RegisterSafeAreaMovable(ISafeAreaMovable movable)
+        {
+            // Start pos register if need return element to start pos
+            movable.StartPos = movable.MovableRect.position;
+
+            movablesList.Add(movable);
+
+            if(Screen.orientation == ScreenOrientation.Portrait)
+            {
+                moveVerticalSafeArea();
+            }
+            // Vertical orient, move closed upper elements
+            void moveVerticalSafeArea()
+            {
+                float unsafeZone = CalcUnsafeHeight();
+                float anchorPos = movable.MovableRect.anchoredPosition.y;
+                if (anchorPos < unsafeZone)
+                {
+                    movable.MovableRect.position -= Vector3.up * unsafeZone;
+                }
+            }
+
+        }
+
 
         private void SubscribeInput()
         {
