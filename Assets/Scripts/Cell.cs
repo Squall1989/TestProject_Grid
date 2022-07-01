@@ -13,6 +13,9 @@ namespace GridProject
     {
         [SerializeField]
         protected T cellMainType;
+
+        public RectTransform rectTR => transform as RectTransform;
+
         internal virtual object CellVal { get; private set; }
 
         internal abstract void Generate();

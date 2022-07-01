@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace GridProject
 {
@@ -15,10 +17,13 @@ namespace GridProject
     {
         protected float startSizeX, startSizeY;
 
+        protected int activeIndex = 0;
+
         protected List<Cell<T>> availableCells;
 
+        internal int ActiveIndex => activeIndex;
 
-        protected int cellCount => availableCells == null ? 0 : availableCells.Count;
+        internal int cellCount => availableCells == null ? 0 : availableCells.Count;
 
         protected virtual void Awake()
         {
@@ -35,17 +40,14 @@ namespace GridProject
             var arrayCells = transform.GetComponentsInChildren<Cell<T>>(true);
             availableCells = new List<Cell<T>>(arrayCells.Length);
 
-            if(arrayCells.Length == 0)
+            if (arrayCells.Length == 0)
             {
                 throw new Exception($"Need at least one cell of this type: {typeof(Cell<T>)} in generator childrens");
             }
 
             // Add to main list
-            foreach (var cell in arrayCells)
-            {
-                availableCells.Add(cell);
-            }
-            
+            availableCells.AddRange(arrayCells);
+
         }
 
 
@@ -53,13 +55,14 @@ namespace GridProject
         internal virtual void Generate(int width, int height)
         {
 
-            if(cellCount < width * height)
+            if (cellCount < width * height)
             {
                 CreateNewCells(width * height - cellCount);
             }
-            
+
+            activeIndex = cellCount - width * height;
             // Deactive unnecessary cells
-            ExcessCells(cellCount - width * height);
+            ExcessCells(activeIndex);
         }
 
 
@@ -68,7 +71,7 @@ namespace GridProject
             // Change list correct capacity
             availableCells.Capacity = cellCount + howMuch;
 
-            for(int i = 0; i < howMuch; i++)
+            for (int i = 0; i < howMuch; i++)
             {
                 var newCell = Instantiate(availableCells[0], transform);
                 newCell.transform.localScale = Vector3.one;
@@ -79,7 +82,7 @@ namespace GridProject
 
         protected void ExcessCells(int howMuch)
         {
-            for(int i = 0; i < availableCells.Count; i++)
+            for (int i = 0; i < availableCells.Count; i++)
             {
                 bool isActive = i >= howMuch;
 
@@ -89,6 +92,27 @@ namespace GridProject
                     GenerateCell(availableCells[i]);
             }
         }
+
+        List<int> indexList;
+
+        internal void ResetIndexGenerator()
+        {
+            // Fill the list with cell list indexes
+            indexList = Enumerable.Range(activeIndex, availableCells.Count - activeIndex).ToList();
+            
+        }
+
+        internal (Cell<T> c1, Cell<T> c2) GetUniqueCellPair() => (RandomCell(), RandomCell());
+        // Get cell from random index and remove index from list
+        private Cell<T> RandomCell()
+        {
+            int cellIndex = indexList[GenerateIndex()];
+            Cell<T> cell = availableCells[cellIndex];
+            indexList.Remove(cellIndex);
+            return cell;
+        }
+
+        private int GenerateIndex() => Random.Range(0, indexList.Count);
 
         protected abstract void GenerateCell(Cell<T> cell);
     }

@@ -296,6 +296,8 @@ MonoBehaviour:
   cellField: {fileID: 8903902854147268415}
   generatorText: {fileID: 8903902854147268414}
   controllerInput: {fileID: 1200803817}
+  cellMoveController: {fileID: 1026164044}
+  randomizeInParallel: 0
 --- !u!1 &796195311
 GameObject:
   m_ObjectHideFlags: 0
@@ -368,6 +370,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4543912742170552031}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1026164044 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -8323484397269114228, guid: 9bbcc3d573c441149ba2ef18a0afad83,
+    type: 3}
+  m_PrefabInstance: {fileID: 4543912742170552031}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c92aafb52a5d2d44b9cb142824958836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1200803816 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8863230272303281283, guid: ce701554784453a45b174d0d82b83c42,
@@ -724,6 +738,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1444072979385847336, guid: ce701554784453a45b174d0d82b83c42,
+        type: 3}
+      propertyPath: m_Name
+      value: Cell_generator
       objectReference: {fileID: 0}
     - target: {fileID: 1504188138969315961, guid: ce701554784453a45b174d0d82b83c42,
         type: 3}

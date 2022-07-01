@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,10 @@ namespace GridProject
         private CellGeneratorText generatorText;
         [SerializeField]
         private ControllerInputUI controllerInput;
+        [SerializeField]
+        private CellController cellMoveController;
+        [SerializeField]
+        private bool randomizeInParallel;
 
         private GridLayoutGroup cellLayoutGroup;
 
@@ -32,8 +37,40 @@ namespace GridProject
         {
             controllerInput.OnGenerate += ReSize;
             controllerInput.OnGenerate += generatorText.Generate;
+            controllerInput.OnRandomize += () => StartCoroutine(RandomizateCellsCorout());
         }
 
+        private IEnumerator  RandomizateCellsCorout()
+        {
+            int pairCount = generatorText.cellCount;
+            generatorText.ResetIndexGenerator();
+
+            for (int i = 0; i < pairCount; i++)
+            {
+                yield return new  WaitUntil(() => isMovingNext());
+                cellPairPrepair();
+            }
+
+            void cellPairPrepair()
+            {
+                var cellPair = generatorText.GetUniqueCellPair();
+
+                int siblingC1 = cellPair.c1.transform.GetSiblingIndex();
+                int siblingC2 = cellPair.c2.transform.GetSiblingIndex();
+
+                Vector2 posC1 = cellPair.c1.transform.position;
+                Vector2 posC2 = cellPair.c2.transform.position;
+
+                
+
+                // Move first cell to second cell pos and conversely
+                cellMoveController.MoveCell(cellPair.c1.rectTR, posC2, siblingC2);
+                cellMoveController.MoveCell(cellPair.c2.rectTR, posC1, siblingC1);
+            }
+
+            // if parallel -> starting all cells exchanges; if not and still moving -> wait
+            bool isMovingNext() => randomizeInParallel || !cellMoveController.IsMoving;
+        }
 
         protected void ReSize(int width, int height)
         {

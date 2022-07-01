@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,11 +10,15 @@ namespace GridProject
         [SerializeField]
         protected RectTransform[] cellsRect;
         [SerializeField]
-        private float moveTime = 2f;
+        private const float moveTime = 2f;
         [SerializeField]
-        private float animateTime = .5f;
+        private const float animateTime = .5f;
 
-        protected Stack<RectTransform> emptyCells;
+        protected Stack<RectTransform> emptyCells = new Stack<RectTransform>();
+
+        private bool isMoving;
+
+        internal bool IsMoving => isMoving;
 
         // Start is called before the first frame update
         void Start()
@@ -25,23 +30,64 @@ namespace GridProject
         }
 
         // Triggering moving cells to exchange
-        internal void MoveCell(RectTransform cell, Vector2 destination)
+        internal void MoveCell(RectTransform cell, Vector2 targer, int newSibPos)
         {
-            // Need empty cells, for gridLayoutGroup
-            var empty = GetFromPool();
+            // Empty cell, without graphic
+            RectTransform empty = GetFromPool();
 
-            StartCoroutine(CellMoveCorout(cell, empty));
+            int cellSiblingPos = cell.GetSiblingIndex();
+
+            // Exchange empty cell and moving(animating) cell
+            Substitute(empty, cell, cellSiblingPos);
+
+            // When end moving, exchange poses
+            StartCoroutine(CellMoveCorout(cell, targer, () => Substitute(cell, empty, newSibPos)));
+
         }
 
-        private IEnumerator CellMoveCorout(RectTransform cell, RectTransform empty)
+        private IEnumerator CellMoveCorout(Transform cell, Vector3 target, Action endAction)
         {
+            float startDist = distance();
+            Vector3 moveVector = (target - cell.position).normalized;
 
+            do
+            {
+                Debug.Log($"speed: {speed()} distance: {distance()}");
+
+                cell.position += moveVector * speed();
+                isMoving = true;
+
+                yield return null;
+
+            } while (distance() <= startDist);
+
+            isMoving = false;
+
+            endAction.Invoke();
+
+            float speed() => startDist * Time.deltaTime / moveTime;
+            float distance() => (cell.position - target).magnitude;
         }
 
-        private IEnumerator AnimateCorout()
+        private void Substitute(RectTransform outsideCell, RectTransform cellInGrid, int sibPos)
         {
+            Transform cellParent = cellInGrid.parent;
+            Vector2 cellSize = cellInGrid.sizeDelta;
 
+            // Paste sell in grid
+            outsideCell.parent = cellParent;
+            outsideCell.SetSiblingIndex(sibPos);
+
+            // Remove cell from grid
+            cellInGrid.parent = transform;
+            cellInGrid.localScale = Vector3.one;
+            cellInGrid.sizeDelta = cellSize;
         }
+
+        //private IEnumerator AnimateCorout()
+        //{
+        //
+        //}
 
         public RectTransform GetFromPool()
         {
