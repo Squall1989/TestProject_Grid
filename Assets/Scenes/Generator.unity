@@ -297,7 +297,7 @@ MonoBehaviour:
   generatorText: {fileID: 8903902854147268414}
   controllerInput: {fileID: 1200803817}
   cellMoveController: {fileID: 1026164044}
-  randomizeInParallel: 0
+  randomizeInParallel: 1
 --- !u!1 &796195311
 GameObject:
   m_ObjectHideFlags: 0
