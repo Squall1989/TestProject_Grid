@@ -42,11 +42,18 @@ namespace GridProject
 
         private IEnumerator  RandomizateCellsCorout()
         {
-            int pairCount = generatorText.cellCount;
+            int pairCount = generatorText.activeCells / 2;
             generatorText.ResetIndexGenerator();
+
+            cellMoveController.IsBreakMoving = true;
+
+            yield return new WaitUntil(() => !cellMoveController.IsMoving);
+
+            cellMoveController.IsBreakMoving = false;
 
             for (int i = 0; i < pairCount; i++)
             {
+                // Wait moving end
                 yield return new  WaitUntil(() => isMovingNext());
                 cellPairPrepair();
             }
@@ -60,8 +67,6 @@ namespace GridProject
 
                 Vector2 posC1 = cellPair.c1.transform.position;
                 Vector2 posC2 = cellPair.c2.transform.position;
-
-                
 
                 // Move first cell to second cell pos and conversely
                 cellMoveController.MoveCell(cellPair.c1.rectTR, posC2, siblingC2);

@@ -15,6 +15,7 @@ namespace GridProject
     /// </summary>
     public abstract class CellGenerator<T> : MonoBehaviour
     {
+        // Size of grid
         protected float startSizeX, startSizeY;
 
         protected int activeIndex = 0;
@@ -23,7 +24,9 @@ namespace GridProject
 
         internal int ActiveIndex => activeIndex;
 
-        internal int cellCount => availableCells == null ? 0 : availableCells.Count;
+        protected int cellCount => availableCells == null ? 0 : availableCells.Count;
+
+        internal int activeCells => cellCount - activeIndex;
 
         protected virtual void Awake()
         {

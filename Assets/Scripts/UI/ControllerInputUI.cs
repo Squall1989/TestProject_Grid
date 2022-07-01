@@ -76,7 +76,7 @@ namespace GridProject
             }
             catch (Exception e)
             {
-                Debug.LogError("Convert exception: " + e);
+                Debug.LogError("Got a converting exception: " + e);
                 return 0;
             }
         }

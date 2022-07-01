@@ -10,22 +10,40 @@ namespace GridProject
         [SerializeField]
         protected RectTransform[] cellsRect;
         [SerializeField]
-        private const float moveTime = 2f;
-        [SerializeField]
-        private const float animateTime = .5f;
+        private float moveTime = 2f;
 
         protected Stack<RectTransform> emptyCells = new Stack<RectTransform>();
 
         private bool isMoving;
 
-        internal bool IsMoving => isMoving;
+        internal bool IsMoving {
+            get => isMoving;
+
+            private set
+            {
+                isMoving = value;
+            }
+        }
+        private bool isBreakMoving;
+
+        internal bool IsBreakMoving
+        {
+            get => isBreakMoving;
+
+            set
+            {
+                if (isMoving && value)
+                    isBreakMoving = value;
+                else
+                    isBreakMoving = false;
+            }
+        }
 
         // Start is called before the first frame update
         void Start()
         {
             foreach (var cell in cellsRect)
                 emptyCells.Push(cell);
-
 
         }
 
@@ -50,16 +68,15 @@ namespace GridProject
             float startDist = distance();
             Vector3 moveVector = (target - cell.position).normalized;
 
-            do
-            {
-                Debug.Log($"speed: {speed()} distance: {distance()}");
 
+            while (distance() > speed() && !isBreakMoving) 
+            {
                 cell.position += moveVector * speed();
+
                 isMoving = true;
 
                 yield return null;
-
-            } while (distance() <= startDist);
+            }
 
             isMoving = false;
 
@@ -74,14 +91,15 @@ namespace GridProject
             Transform cellParent = cellInGrid.parent;
             Vector2 cellSize = cellInGrid.sizeDelta;
 
-            // Paste sell in grid
-            outsideCell.parent = cellParent;
-            outsideCell.SetSiblingIndex(sibPos);
-
             // Remove cell from grid
             cellInGrid.parent = transform;
             cellInGrid.localScale = Vector3.one;
             cellInGrid.sizeDelta = cellSize;
+
+            // Paste sell in grid
+            outsideCell.parent = cellParent;
+            outsideCell.SetSiblingIndex(sibPos);
+
         }
 
         //private IEnumerator AnimateCorout()
